@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*" width="1280" height="720">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.Group;
+			
+			private var contenedor:BorderContainer;
+			public var strNuevo:String = '';
+			private var strPadre:String = '';
+			
+			protected function fnMouseDownHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.target.parentDocument is CartaView || event.target is CartaView){
+					
+					
+					contenedor = new BorderContainer();
+					contenedor.width = 60;
+					contenedor.height = 100;
+					event.target.x = 0;
+					event.target.y = 0;
+					PopUpManager.addPopUp(contenedor, DisplayObject(event.target));
+					PopUpManager.centerPopUp(contenedor);
+					//contenedor.x -= 10000;
+					//this.addElement(contenedor);
+					contenedor.addElement(event.currentTarget.removeElement(IVisualElement(event.target)));
+					strPadre = event.currentTarget.id;
+					//contenedor.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
+					contenedor.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+					event.target.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+					this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+					contenedor.startDrag(true);	
+					this.addEventListener(MouseEvent.MOUSE_MOVE, dragCicle); 
+					
+					
+				}
+				
+			}
+			
+			
+			protected function stopDragging(event:MouseEvent):void 
+			{ 
+				// Tell Flash Player to stop listening for the mouseMove event. 
+				this.removeEventListener(MouseEvent.MOUSE_MOVE, dragCicle); 
+			} 
+			
+			
+			protected function dragCicle(event:MouseEvent):void 
+			{ 
+				// Move the circle to the location of the cursor, maintaining  
+				// the offset between the cursor's location and the  
+				// location of the dragged object. 
+				contenedor.x = event.stageX; 
+				contenedor.y = event.stageY; 
+				
+				// Instruct Flash Player to refresh the screen after this event. 
+				event.updateAfterEvent(); 
+			} 
+			
+			protected function mouseUpHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				contenedor.stopDrag();
+				this.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+				if(strNuevo.indexOf('Pro') > -1){
+					this[strNuevo].addElement(contenedor.removeElementAt(0));	
+				} else {
+					this[strPadre].addElement(contenedor.removeElementAt(0));
+				}
+				
+				PopUpManager.removePopUp(contenedor);
+				trace("**** btn_mouseUpHandler ****");
+			}
+			
+			
+			
+			protected function mouseOverHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				strNuevo = event.currentTarget.id + '';
+				trace("**** over " + strNuevo + " ****");
+			}
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var r:Rectangle = bcPrincipal.getRect(stage);
+				
+				var centro:Point = new Point(r.x+r.width/2,r.y+r.height/2);
+				
+				//m matriz de transformación del movieclip
+				var m:Matrix=bcPrincipal.transform.matrix;
+				
+				//translación al centro
+				m.tx -= centro.x;
+				//m.ty -= centro.y;
+				
+				//rotación (en radianes)
+				/*m.a = 1;
+				m.b = 0;
+				m.c = 0;
+				m.d = 1;*/
+				//m.rotate(20 * (Math.PI/180));
+				
+				//traslación final, a su posición de partida
+				m.tx += centro.x;
+				m.ty += centro.y;
+				
+				//y aplicamos la matriz de transformación sobre el movieclip
+				bcPrincipal.transform.matrix=m;
+				bcPrincipal.rotationX = -40;
+				this.addEventListener(ResizeEvent.RESIZE, windowedapplication1_resizeHandler);
+				
+			}
+			
+			protected function windowedapplication1_resizeHandler(event:ResizeEvent):void
+			{
+				// TODO Auto-generated method stub
+				var r:Rectangle = bcPrincipal.getRect(stage);
+				
+				var centro:Point = new Point(r.x+r.width/2,r.y+r.height/2);
+				
+				//m matriz de transformación del movieclip
+				var m:Matrix=bcPrincipal.transform.matrix;
+				
+				//translación al centro
+				m.tx -= centro.x;
+				//m.ty -= centro.y;
+				
+				//rotación (en radianes)
+				/*m.a = 1;
+				m.b = 0;
+				m.c = 0;
+				m.d = 1;*/
+				//m.rotate(20 * (Math.PI/180));
+				
+				//traslación final, a su posición de partida
+				m.tx += centro.x;
+				m.ty += centro.y;
+				
+				//y aplicamos la matriz de transformación sobre el movieclip
+				bcPrincipal.transform.matrix=m;
+				bcPrincipal.rotationX = -40
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="bottom" paddingBottom="50"/>
+	</s:layout>
+	<s:BorderContainer id="bcPrincipal" width="40%" height="80%" creationComplete="bordercontainer1_creationCompleteHandler(event)">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"/>
+		</s:layout>
+		
+		<s:BorderContainer width="100%" height="100%">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" gap="100"/>
+			</s:layout>
+			<s:BorderContainer id="apOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)"  width="100%" height="100">
+				<s:layout>
+					<s:HorizontalLayout/>
+				</s:layout>
+				
+			</s:BorderContainer>
+			<s:BorderContainer id="alOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+				<s:layout>
+					<s:HorizontalLayout horizontalAlign="center"/>
+				</s:layout>
+			</s:BorderContainer>
+			<s:BorderContainer id="atOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+				<s:layout>
+					<s:HorizontalLayout horizontalAlign="center"/>
+				</s:layout>
+			</s:BorderContainer>	
+		</s:BorderContainer>
+		
+		
+		<s:BorderContainer width="100%" height="100%">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center"/>
+			</s:layout>
+			<s:BorderContainer id="atPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+				<s:layout>
+					<s:HorizontalLayout horizontalAlign="center"/>
+				</s:layout>
+				
+			</s:BorderContainer>
+			<s:BorderContainer id="alPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+				<s:layout>
+					<s:HorizontalLayout horizontalAlign="center"/>
+				</s:layout>
+			</s:BorderContainer>
+			<s:BorderContainer id="apPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+				<s:layout>
+					<s:HorizontalLayout horizontalAlign="center" />
+				</s:layout>
+				
+				
+				<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+			</s:BorderContainer>	
+		</s:BorderContainer>
+		
+	</s:BorderContainer>
+	
+</s:WindowedApplication>
