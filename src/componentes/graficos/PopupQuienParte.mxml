@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" width="400" height="300" color="#ffffff" creationComplete="bordercontainer2_creationCompleteHandler(event)" backgroundColor="#000000" backgroundAlpha="{add}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import controlador.Controlador;
+			
+			import eventos.PartidaEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			[Bindable] private var add:Number = 0;
+			
+			
+			protected function azar_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				modelApp.azar = false;
+				modelApp.partida.azarYo = 10;//Math.floor(Math.random()*(21));
+				var evento:PartidaEvent = new PartidaEvent(PartidaEvent.AZAR, modelApp.sesion.id, null, null, modelApp.partida);
+				Controlador.getInstance().dispatchEvent(evento); 
+				if(modelApp.partida.azarEl != -1){
+					if(modelApp.partida.azarEl < modelApp.partida.azarYo){
+						modelApp.partida.azarGanador = modelApp.sesion.id; 
+					} else {
+						if(modelApp.partida.azarEl == modelApp.partida.azarYo && modelApp.partida.idPlayer1 == modelApp.sesion.id){
+							modelApp.partida.azarGanador = modelApp.sesion.id;
+						} else {
+							modelApp.partida.azarGanador = modelApp.partida.idPlayer1;
+						}
+					}
+					modelApp.azarResultado = true;	
+				}
+				
+				//PopUpManager.removePopUp(this);
+			}
+			
+			protected function bordercontainer2_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(modelApp.partida.idPlayer1 == modelApp.sesion.id){
+					modelApp.azar = true;
+				} else {
+					modelApp.azar = false;
+				}
+				this.addEventListener(Event.ENTER_FRAME, oscurese);
+			}
+			
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private function oscurese(event:Event):void{
+				add += 0.01;
+				if(add > 0.5){
+					this.removeEventListener(Event.ENTER_FRAME, oscurese);
+				}
+			}
+			
+			
+			
+			public function cerrar():void
+			{
+				// TODO Auto-generated method stub
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<s:BorderContainer width="237" height="168" cornerRadius="10" horizontalCenter="0"
+					   verticalCenter="0">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"  gap="10" paddingBottom="10"/>
+		</s:layout>
+		<s:Group width="100%">
+			<s:Rect width="100%" height="100%" topLeftRadiusX="10" topLeftRadiusY="10" topRightRadiusX="10" topRightRadiusY="10">
+				
+				
+				<s:fill>
+					<s:SolidColor color="#2626b3" />
+				</s:fill>
+			</s:Rect>
+			<s:Label top="10" left="10" right="10" text="Quien Parte" fontSize="16" fontWeight="bold" color="#ffffff"/>
+		</s:Group>
+		
+		<!--<s:Rect width="100%" height="1">
+		<s:fill>
+		<s:SolidColor color="#dddddd" />
+		</s:fill>
+		</s:Rect>-->
+		<s:VGroup width="100%" height="117" paddingLeft="10" paddingRight="10" verticalAlign="middle">
+			<s:Group width="100%" height="100%">
+				<s:Button x="72" y="86" label="Lanzar" id="btnAzar" color="#010000" click="azar_clickHandler(event)" enabled="{modelApp.azar}"/>
+				<s:TextInput id="txtEl" x="54" y="10" width="50" color="#020000" editable="false"
+							 text="{modelApp.partida.azarEl}"/>
+				<s:TextInput id="txtYo" x="54" y="40" width="50" color="#020000" editable="false"
+							 text="{modelApp.partida.azarYo}"/>
+				<s:Label x="10" y="10" color="#010000" text="El"/>
+				<s:Label x="10" y="44" color="#010000" text="Yo"/>
+			</s:Group>
+		</s:VGroup>
+		
+		<s:HGroup gap="10">
+			<!--<s:Button  width="90" height="33" label="OK" chromeColor="#2626b3" click="funPost_clickHandler(event)"/>-->
+		</s:HGroup>
+	</s:BorderContainer>
+</s:BorderContainer>

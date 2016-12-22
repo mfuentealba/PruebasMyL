@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" horizontalCenter="0" verticalCenter="0" backgroundColor="#ffffff" alpha="1" backgroundAlpha=".3" creationComplete="bordercontainer1_creationCompleteHandler(event)" remove="bordercontainer1_removeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import flash.events.TimerEvent;
+			
+			private var timer:Timer;
+			
+			private var count:int = 0;
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				timer = new Timer(500, 0);
+				timer.addEventListener(TimerEvent.TIMER, actualizaLabel);
+				timer.start();	
+				count = 0;
+				lblProc.text = 'Procesando';
+			}
+			
+			private function actualizaLabel(event:*):void{
+				if(count == 3){
+					count = 0;
+					lblProc.text = 'Procesando';
+				} else {
+					count ++;
+					lblProc.text += '.';
+				}
+			}
+			
+			protected function bordercontainer1_removeHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				timer.stop();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	<s:BorderContainer width="150" height="100" backgroundColor="#555555" color="#ffffff" backgroundAlpha=".7" cornerRadius="5" alpha="1" borderAlpha="1" borderColor="#ffffff">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" paddingTop="10" gap="5"/>
+		</s:layout>
+		<s:Label width="100" height="100%" horizontalCenter="0" text="Espere un momento" alpha="1" fontWeight="bold"/>
+		<s:Rect width="100%" height="1">
+			<s:fill>
+				<s:SolidColor color="#dddddd" />
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" height="100%" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
+			<s:BusyIndicator alpha="1" height="30" width="30"/>
+			
+			<s:Label id="lblProc" width="100" horizontalCenter="0" text="Procesando" alpha="1" fontSize="12"/>		
+		</s:HGroup>
+	</s:BorderContainer>
+	
+</s:BorderContainer>

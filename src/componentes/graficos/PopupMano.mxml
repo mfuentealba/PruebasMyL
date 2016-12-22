@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" width="828" height="300" color="#ffffff" creationComplete="bordercontainer2_creationCompleteHandler(event)" backgroundColor="#000000" backgroundAlpha="{add}" xmlns:graficos="componentes.graficos.*"
+				   >
+	<fx:Script>
+		<![CDATA[
+			import clasesInternas.Duelo;
+			
+			import controlador.Controlador;
+			
+			import eventos.MovimientoEvent;
+			import eventos.PartidaEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import views.PartidaView;
+			
+			import vo.MovimientoVO;
+			
+			
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			[Bindable] private var add:Number = 0;
+			[Bindable] public var cartas:ArrayCollection;
+			
+			public var fnpos:Function;
+			public var fnDescarte:Function;
+			public var fnMulligan:Function;
+			[Bindable] public var btnMulligan:Boolean;
+			[Bindable] public var btnDescartar:Boolean;
+			[Bindable] public var btnAceptar:Boolean;
+			public var cant:int;
+			public var fnInfo:Function;
+			public var activo:Boolean = false;
+			[Bindable] public var fase:int;
+			public var aliadosJugados:int;
+			[Bindable] public var orosBlock:Boolean = false;
+			[Bindable] public var countDataProvider:int;
+			[Bindable] public var reserva:int;
+			
+			protected function bordercontainer2_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(modelApp.partida.idPlayer1 == modelApp.sesion.id){
+					modelApp.azar = true;
+				} else {
+					modelApp.azar = false;
+				}
+				this.addEventListener(Event.ENTER_FRAME, oscurese);
+				countDataProvider = cartas.length;
+			}
+			
+			private function oscurese(event:Event):void{
+				add += 0.01;
+				if(add > 0.5){
+					this.removeEventListener(Event.ENTER_FRAME, oscurese);
+				}
+			}
+			
+			
+			
+			public function cerrar():void
+			{
+				// TODO Auto-generated method stub
+				PopUpManager.removePopUp(this);
+				this.activo = false;
+			}
+			
+			
+			
+			
+			
+			protected function Mulligan_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				//cartas = 
+				cerrar();
+				fnMulligan.call(this, cant - 1);
+				
+			}
+			
+			protected function fin_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				
+				if(btnMulligan){
+					this.activo = false;
+					
+					var movimientoVO:MovimientoVO = new MovimientoVO();
+					movimientoVO.fase = String(1);
+					movimientoVO.idOponente = modelApp.partida.idOponente;
+					movimientoVO.idPartida = '' + modelApp.partida.id;
+					movimientoVO.movimiento = '' + zonaManoPropia.numElements + ',' + modelApp.partidaView.zonaCastilloPropia.numElements;
+					movimientoVO.nroJugada = modelApp.partida.nroJugada;
+					movimientoVO.turno = '' + modelApp.partida.nroTurno;
+					
+					movimientoVO.tiempo = '5:00';
+					var movimientoEvent:MovimientoEvent = new MovimientoEvent(MovimientoEvent.ENVIA_PARTIDA, movimientoVO);
+					Controlador.getInstance().dispatchEvent(movimientoEvent);
+					
+					cerrar();
+				} else {
+					
+					if(zonaManoPropia.cartaSelect){
+						var indexCartaJugada:int = this.zonaManoPropia.getElementIndex(zonaManoPropia.cartaSelect);
+						//this.fnpos.call(this, this.zonaManoPropia.removeElement(zonaManoPropia.cartaSelect));
+						var zonaJugar:String = '';
+						switch(zonaManoPropia.cartaSelect.cartaVO.tipo){
+							case "Oro":
+								zonaManoPropia.cartaSelect.accion = 'zonaOro';
+								break;
+							case "Aliado":
+								zonaManoPropia.cartaSelect.accion = 'zonaDefensa';
+								break;
+							case "Arma":
+								modelApp.partidaView.popArma.activo = true;
+								modelApp.partidaView.popArma.cartas = new ArrayCollection();
+								for(var i:int = 0; i < modelApp.partidaView.zonaDefensaPropia.numElements; i++){
+									modelApp.partidaView.popArma.cartas.addItem(modelApp.partidaView.zonaDefensaPropia.getElementAt(i));	
+								}
+								
+								modelApp.partidaView.popArma.width = modelApp.partidaView.width;
+								modelApp.partidaView.popArma.height = modelApp.partidaView.height;
+								modelApp.partidaView.popArma.cartaArma = zonaManoPropia.cartaSelect;
+								modelApp.partidaView.popArma.fnpos = modelApp.partidaView.juegaArma;
+								modelApp.partidaView.popArma.titulo = zonaManoPropia.cartaSelect.cartaVO.nombre;
+								PopUpManager.addPopUp(modelApp.partidaView.popArma, this, true);
+								PopUpManager.centerPopUp(modelApp.partidaView.popArma);	
+								break;
+							case "Totem":
+								zonaManoPropia.cartaSelect.accion = 'zonaApoyo';
+								break;
+							case "Talismán":
+								//duelo.cementerioPropio.addItem(carta);
+								zonaManoPropia.cartaSelect.accion = 'zonaCementerio';
+								break;
+							
+						}
+						if(zonaManoPropia.cartaSelect.cartaVO.tipo != 'Arma'){
+							
+							
+							var desde:String = zonaManoPropia.cartaSelect.contenedor.replace(zonaManoPropia.cartaSelect.propietario, zonaManoPropia.cartaSelect.envio);
+							zonaManoPropia.cartaSelect.fnAccion(zonaManoPropia.cartaSelect.accion + 'Propia');
+							modelApp.partidaView.fnTrasladarCarta(cartas, [{id: zonaManoPropia.cartaSelect.cartaVO.id, desde: desde}], zonaManoPropia.cartaSelect.accion.replace(zonaManoPropia.cartaSelect.propietario, zonaManoPropia.cartaSelect.envio), 'popMano');	
+						}
+						zonaManoPropia.cartaSelect.borde = false;
+						zonaManoPropia.cartaSelect = null;
+						orosBlock = true;
+					}
+					cerrar();
+				}
+				
+			}
+			
+			public function cargaCartas():void{
+				zonaManoPropia.removeAllElements();
+				for each(var carta:Carta in cartas){
+					zonaManoPropia.addElement(carta);	
+				}
+				
+			}
+			
+			
+			public function deshabilitaCartas(val:int):void{
+				for(var i:int = 0; i < zonaManoPropia.numElements; i++){
+					Carta(zonaManoPropia.getElementAt(i)).enabled = true;
+				}
+				switch(val){
+					case Duelo.AGRUPACION:
+						
+						break;
+					case Duelo.VIGILIA:
+						for(i = 0; i < zonaManoPropia.numElements; i++){
+							if(Carta(zonaManoPropia.getElementAt(i)).cartaVO.coste > reserva){
+								Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+							}
+							switch(Carta(zonaManoPropia.getElementAt(i)).cartaVO.tipo){
+								case 'Oro':
+									if(orosBlock == true){
+										Carta(zonaManoPropia.getElementAt(i)).enabled = false;	
+										
+									}
+									break;
+								case 'Arma':
+									if(PartidaView(MitosFlex(this.parentApplication).navigator.activeView).zonaDefensaPropia.numElements < 1 && PartidaView(MitosFlex(this.parentApplication).navigator.activeView).zonaAtaquePropia.numElements < 1){
+										Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+									}
+									break;
+							}
+						}
+						break;
+					case Duelo.ATAQUE:
+						for(i = 0; i < zonaManoPropia.numElements; i++){
+							if(Carta(zonaManoPropia.getElementAt(i)).cartaVO.coste > reserva){
+								Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+							}
+							switch(Carta(zonaManoPropia.getElementAt(i)).cartaVO.tipo){
+								case 'Oro':
+									Carta(zonaManoPropia.getElementAt(i)).enabled = false;	
+									break;
+								case 'Arma':
+									Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+									break;
+								case 'Talismán':
+									Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+									break;
+								case 'Aliado':
+									Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+									break;
+							}
+						}
+						break;
+					case Duelo.DEFENSA:
+						break;
+					case Duelo.G_TALISMANES:
+						for(i = 0; i < zonaManoPropia.numElements; i++){
+							Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+							if(Carta(zonaManoPropia.getElementAt(i)).cartaVO.tipo == 'Talismán'){
+								Carta(zonaManoPropia.getElementAt(i)).enabled = true;
+							}
+							if(Carta(zonaManoPropia.getElementAt(i)).cartaVO.coste > reserva){
+								Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+							}
+						}
+						break;
+					case Duelo.ASIGNACION_DAMAGE:
+						break;
+					case Duelo.FINAL:
+						break;
+					case Duelo.FIN_TURNO:
+						
+						break;
+				}			
+			}
+			
+			private function set bloqueoOros(val:Boolean):void{
+				if(val){
+					for(var i:int = 0; i < zonaManoPropia.numElements; i++){
+						if(Carta(zonaManoPropia.getElementAt(i)).cartaVO.tipo == 'Oro'){
+							Carta(zonaManoPropia.getElementAt(i)).enabled = false;
+						}
+					}
+				}
+			}
+			
+			
+			protected function descartar_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub		
+				
+				if(zonaManoPropia.cartaSelect){
+					var indexCartaJugada:int = this.zonaManoPropia.getElementIndex(zonaManoPropia.cartaSelect);
+					cartas.source.splice(indexCartaJugada, 1);
+					//countDataProvider--;
+					this.fnDescarte.call(this, this.zonaManoPropia.removeElement(zonaManoPropia.cartaSelect));						
+					zonaManoPropia.cartaSelect = null;
+					//zonaManoPropia.countDataProvider = cartas.length; 
+					cerrar();
+					
+				} else {
+					info.open(zonaManoPropia);
+				}
+				
+				
+				
+				
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Callout id="info" focusOut="info.close();">
+			<s:VGroup>
+				<s:Label text="Debes seleccionar una carta"/>
+				<s:Button label="cerrar" click="{info.close()}"/>
+			</s:VGroup>
+			
+		</s:Callout>
+	</fx:Declarations>
+	
+	
+	<fx:Binding source="orosBlock" destination="bloqueoOros"/>
+	<s:BorderContainer width="80%" height="80%" cornerRadius="10" horizontalCenter="0"
+					   verticalCenter="0">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"  gap="10" paddingBottom="10"/>
+		</s:layout>
+		<s:Group width="100%">
+			<s:Rect width="100%" height="100%" topLeftRadiusX="10" topLeftRadiusY="10" topRightRadiusX="10" topRightRadiusY="10">
+				
+				
+				<s:fill>
+					<s:SolidColor color="#2626b3" />
+				</s:fill>
+			</s:Rect>
+			<s:Label top="10" left="10" right="10" text="Mano" fontSize="16" fontWeight="bold" color="#ffffff"/>
+		</s:Group>
+		
+		<!--<s:Rect width="100%" height="1">
+		<s:fill>
+		<s:SolidColor color="#dddddd" />
+		</s:fill>
+		</s:Rect>-->
+		<s:Scroller width="95%" height="65%">
+			<graficos:Zona id="zonaManoPropia" width="100%" height="100%" fnInfo="fnInfo" horizontalCenter="0" verticalCenter="0" orientacionSt="horizontal"/>	
+		</s:Scroller>
+		
+		
+		<s:HGroup gap="10">
+			<s:Button  width="90" height="33" label="Mulligan" chromeColor="#2626b3" click="Mulligan_clickHandler(event)" includeInLayout="{btnMulligan}" visible="{btnMulligan}"/>
+			<s:Button id="btnDescarte"  width="90" height="33" label="Descartar" chromeColor="#2626b3" click="descartar_clickHandler(event)" includeInLayout="{btnDescartar}" visible="{btnDescartar}"/>
+			<s:Button  width="90" height="33" label="Aceptas" chromeColor="#2626b3" click="fin_clickHandler(event)" includeInLayout="{btnAceptar}" visible="{btnAceptar}"/>
+		</s:HGroup>
+	</s:BorderContainer>
+</s:BorderContainer>

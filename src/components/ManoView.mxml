@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" gap="-40" xmlns:components="components.*" creationComplete="hgroup1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var delta:int = 25;
+				var ini:int = -50;
+				var carta:CartaView;
+				for(var i:int = 0; i < this.numElements; i++){
+					carta = CartaView(this.getElementAt(i));
+					var r:Rectangle = carta.getRect(stage);
+					var m:Matrix = carta.transform.matrix;
+					m.ty = carta.height;
+					carta.rotationZ = ini;
+					ini += delta;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+</s:HGroup>

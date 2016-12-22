@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" backgroundColor="#464646" xmlns:rtc="http://ns.adobe.com/rtc">
+	<fx:Script>
+		<![CDATA[
+			import modelo.Modelo;
+			public var fnEnviarMsg:Function;
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			
+			protected function btnEnviar_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				fnEnviarMsg.call(this, txtMsg.text);
+				txtMsg.text = '';
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout gap="3" horizontalAlign="center" paddingTop="5"/>
+		
+	</s:layout>
+	<s:TextArea x="0" y="-1" width="98%" height="100%" text="{modelApp.chatPublico}" editable="false"/>
+	<s:HGroup gap="3" width="100%">
+		<s:TextInput width="77%" id="txtMsg"/>
+		<s:Button x="161" y="175" width="23%" minWidth="55" height="33" label="Enviar" fontSize="11" click="btnEnviar_clickHandler(event)"/>	
+	</s:HGroup>
+	
+	
+</s:BorderContainer>

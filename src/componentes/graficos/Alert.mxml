@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" width="80%" horizontalCenter="0" verticalCenter="0" 
+				   creationComplete="skinnablepopupcontainer1_creationCompleteHandler(event)"
+				   backgroundColor="#000000" backgroundAlpha=".7" color="#FCF7F7"
+				   >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			[Bindable]public var msg:String;
+			public var post:Function;
+			public function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				event.stopImmediatePropagation();
+				//this.close();
+				PopUpManager.removePopUp(this);
+				//desatenuar(this.parentDocument);
+				if(post != null){
+					post.call();	
+				}
+				
+			}
+			
+			
+			/*	protected function atenuar(Form:*):void
+			{
+			// TODO Auto-generated method stub
+			var n:int = Form.numElements;
+			for(var i:int = 0; i < n; i++){
+			Form.getElementAt(i)['alpha'] = .3;
+			Form.getElementAt(i)['enabled'] = false;
+			}
+			//	vgForm.setStyle('color', "#000000"); 
+			//Form.enabled = false;
+			}
+			
+			public function desatenuar(Form:*):void
+			{
+			// TODO Auto-generated method stub
+			var n:int = Form.numElements;
+			for(var i:int = 0; i < n; i++){
+			Form.getElementAt(i)['alpha'] = 1;
+			Form.getElementAt(i)['enabled'] = true;
+			}
+			//	vgForm.setStyle('color', "#000000"); 
+			//Form.enabled = true;
+			}*/
+			
+			public function skinnablepopupcontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				//	atenuar(this.parentDocument);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:BorderContainer horizontalCenter="0" verticalCenter="0" borderColor="#FCF8F8" borderWeight="2"
+					   contentBackgroundAlpha=".7" contentBackgroundColor="#1D1C1C"
+					   backgroundColor="#010101">
+		<s:VGroup horizontalAlign="center" paddingTop="8" paddingBottom="8" paddingLeft="8" paddingRight="8" gap="5" width="100%">
+			<s:Label text="{msg}"/>
+			<s:HGroup id="hgBotones" horizontalCenter="0">
+				<s:Button id="btn" label="OK" click="button1_clickHandler(event)" skinClass="componentes.ButtonSkinAlert"/>					
+			</s:HGroup>
+			
+		</s:VGroup>
+	</s:BorderContainer>
+	<!--<s:TitleWindow backgroundColor="#1D1C1C"
+	close="button1_clickHandler(new MouseEvent(MouseEvent.CLICK,false))"
+	contentBackgroundColor="#B45E5E" downColor="#782020"
+	focusedTextSelectionColor="#7A2727" horizontalCenter="0"
+	inactiveTextSelectionColor="#891A1A" symbolColor="#711515" title="Atención"
+	verticalCenter="0">-->
+	
+	<!--</s:TitleWindow>-->
+</s:BorderContainer>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" width="400" height="300" color="#ffffff" creationComplete="bordercontainer2_creationCompleteHandler(event)" backgroundColor="#000000" backgroundAlpha="{add}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import controlador.Controlador;
+			
+			import eventos.PartidaEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			[Bindable] private var add:Number = 0;
+			
+			public var fnpos:Function;
+			
+			
+			
+			protected function bordercontainer2_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(modelApp.partida.idPlayer1 == modelApp.sesion.id){
+					modelApp.azar = true;
+				} else {
+					modelApp.azar = false;
+				}
+				this.addEventListener(Event.ENTER_FRAME, oscurese);
+			}
+			
+			private function oscurese(event:Event):void{
+				add += 0.01;
+				if(add > 0.5){
+					this.removeEventListener(Event.ENTER_FRAME, oscurese);
+				}
+			}
+			
+			
+			
+			public function cerrar():void
+			{
+				// TODO Auto-generated method stub
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			
+			protected function configuraTurno_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				switch(event.target.label){
+					case 'El':
+						modelApp.partida.turno = false;
+						modelApp.turnoOficial = false;
+						break;
+					case 'YO':
+						modelApp.partida.turno = true;
+						modelApp.turnoOficial = true;
+						break;
+				}
+				
+				var partidaEvent:PartidaEvent = new PartidaEvent(PartidaEvent.CONFIGURA_TURNO, 0, '', '', modelApp.partida); 
+				Controlador.getInstance().dispatchEvent(partidaEvent);
+				cerrar();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:BorderContainer width="237" height="168" cornerRadius="10" horizontalCenter="0"
+					   verticalCenter="0">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"  gap="10" paddingBottom="10"/>
+		</s:layout>
+		<s:Group width="100%">
+			<s:Rect width="100%" height="100%" topLeftRadiusX="10" topLeftRadiusY="10" topRightRadiusX="10" topRightRadiusY="10">
+				
+				
+				<s:fill>
+					<s:SolidColor color="#2626b3" />
+				</s:fill>
+			</s:Rect>
+			<s:Label top="10" left="10" right="10" text="Quien Parte" fontSize="16" fontWeight="bold" color="#ffffff"/>
+		</s:Group>
+		
+		<!--<s:Rect width="100%" height="1">
+		<s:fill>
+		<s:SolidColor color="#dddddd" />
+		</s:fill>
+		</s:Rect>-->
+		<s:VGroup width="100%" height="117" paddingLeft="10" paddingRight="10" verticalAlign="middle">
+			<s:Group width="100%" height="100%">
+				<s:Button y="10" width="100" label="El" horizontalCenter="0" click="configuraTurno_clickHandler(event)"/>
+				<s:Button y="64" width="100" label="YO" horizontalCenter="0" click="configuraTurno_clickHandler(event)"/>
+				
+			</s:Group>
+		</s:VGroup>
+		
+		<s:HGroup gap="10">
+			<!--<s:Button  width="90" height="33" label="OK" chromeColor="#2626b3" click="funPost_clickHandler(event)"/>-->
+		</s:HGroup>
+	</s:BorderContainer>
+</s:BorderContainer>

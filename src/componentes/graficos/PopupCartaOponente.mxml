@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:rtc="http://ns.adobe.com/rtc"
+				   >
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import controlador.Controlador;
+			
+			import eventos.MovimientoEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			
+			import vo.CartaVO;
+			import vo.MovimientoVO;
+			[Bindable] public var cartaVO:CartaVO;
+			[Bindable] public var carta:Carta;
+			public var arrCartaObjetivo:Array;
+			public var destino:String;
+			[Bindable] public var cartaObjetivo:String;
+			
+			[Bindable] public var interferir:Boolean = false;	
+			private var modelApp:Modelo = Modelo.getInstance();
+			
+			
+			
+			
+			
+			
+			protected function btnBack_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				modelApp.partida.nroJugada++;
+				var movimientoVO:MovimientoVO = new MovimientoVO();
+				var ultimoMov:MovimientoVO = modelApp.partida.arrMovimientos[modelApp.partida.arrMovimientos.length - 1];
+				movimientoVO.fase = String(ultimoMov.fase);
+				movimientoVO.idOponente = modelApp.partida.idOponente;
+				movimientoVO.idPartida = '' + modelApp.partida.id;
+				movimientoVO.movimiento = '0,Nada,0';// + zonaJugar;
+				movimientoVO.nroJugada = modelApp.partida.nroJugada;
+				movimientoVO.turno = '' + modelApp.partida.nroJugada;
+				//modelApp.duelo[String(ultimoMov.movimiento).split(',')[2]]
+				movimientoVO.tiempo = modelApp.timeUsuario.lblMin.text + ':' + modelApp.timeUsuario.lblSeg.text;
+				var movimientoEvent:MovimientoEvent = new MovimientoEvent(MovimientoEvent.EJECUTA_MOVIMIENTO, movimientoVO);
+				Controlador.getInstance().dispatchEvent(movimientoEvent);
+				
+				var encontrada:Boolean = false;
+				for each(var objCarta:* in modelApp.partidaView[arrCartaObjetivo[1]]){
+					if(objCarta['className'] == 'Carta'){
+						if(objCarta['cartaVO']['id'] == String(arrCartaObjetivo[0]).split('.')[0]){
+							Carta(objCarta).fnAccion(destino);
+							encontrada = true;
+							break;
+						}
+						
+					}									
+				}
+				if(!encontrada){
+					modelApp.indexCartaSearch = String(arrCartaObjetivo[0]).split('.')[0];
+					var arrCarta:Array = modelApp.arrCartas.source.filter(modelApp.fnBuscaCarta2);
+					
+					carta = Zona(modelApp.partidaView[arrCartaObjetivo[1]]).getElementAt(Zona(modelApp.partidaView[arrCartaObjetivo[1]]).numElements - 1) as Carta; 
+					
+					
+					carta.cartaVO = arrCarta[0];
+					carta.img = carta.cartaVO.url;
+					carta.fnAccion(destino);
+				}
+				
+				
+				
+				/*
+				switch(cartaVO.tipo){
+					case 'Aliado':
+						var cartaNueva:Carta = new  Carta();
+						cartaNueva.cartaVO = this.cartaVO;						
+						cartaNueva.img = cartaNueva.cartaVO.url; 
+						//modelApp.duelo.zonaAliadosOponente.addItem(cartaNueva);
+						cartaNueva.fnDeselecciona = modelApp.fnDeselecciona;
+						cartaNueva.fnAccion('zonaDefensaOponente');
+						//modelApp.duelo.zonaDefenzaOponente.addItem(cartaNueva);
+						break;
+					case 'Talisman':
+						cartaNueva = new  Carta();
+						cartaNueva.cartaVO = this.cartaVO;						
+						cartaNueva.img = cartaNueva.cartaVO.url;
+						cartaNueva.fnAccion('zonaCementerioOponente');
+						//modelApp.duelo.zonaCementerioOponente.addItem(cartaNueva);
+						break;
+					case 'Arma':
+						for each(var cartaAliado:* in  modelApp.duelo.zonaAliadosOponente){				
+							
+							if(cartaAliado['className'] == 'Carta'){								
+								if(cartaAliado.cartaVO.id.toString() == cartaObjetivo){
+									
+									var gCarta:GCartas = modelApp.fnGeneraGCartas.call(this, gCarta, this.cartaVO, cartaAliado);
+									var i:int = modelApp.duelo.zonaAliadosOponente.getItemIndex(cartaAliado);
+									modelApp.duelo.zonaAliadosOponente.removeItemAt(i);
+									modelApp.duelo.zonaAliadosOponente.addItem(gCarta);
+									break;
+								}
+							} else {
+								if(cartaAliado.idGrupo.toString() == cartaObjetivo){
+									modelApp.fnAddArma.call(this, GCartas(cartaAliado), this.cartaVO);
+									//GCartas(cartaAliado).addElementAt(this, 0);									
+									break;
+								}
+							}
+							
+						}
+						break;
+					case 'Totem':
+						cartaNueva = new  Carta();
+						cartaNueva.cartaVO = this.cartaVO;						
+						cartaNueva.img = cartaNueva.cartaVO.url;
+						cartaNueva.fnAccion('zonaApoyoOponente');
+						//modelApp.duelo.zonaApoyoOponente.addItem(cartaNueva);
+						break;
+					case 'Oro':
+						cartaNueva = new  Carta();
+						cartaNueva.cartaVO = this.cartaVO;						
+						cartaNueva.img = cartaNueva.cartaVO.url;
+						cartaNueva.fnAccion('zonaOroOponente');
+						//modelApp.duelo.zonaOroOponente.addItem(cartaNueva);
+						break;
+				}
+				*/
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+	
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:ActionBar width="100%" height="10%">
+		<s:actionContent>
+			<s:Button label="Atras" click="btnBack_clickHandler(event)" height="100%"/>
+		</s:actionContent>
+	</s:ActionBar>
+	<s:HGroup height="80%" width="100%" gap="10" paddingBottom="10" paddingLeft="10" paddingRight="10"
+			  paddingTop="10" requestedColumnCount="2">
+		<s:Image x="217" y="145" height="100%" width="50%" source="{cartaVO.url}"/>
+		<s:BorderContainer width="50%" height="100%" cornerRadius="5">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:Label text="{cartaVO.nombre}"/>
+			<s:TextArea width="100%" height="100%" editable="false" text="{cartaVO.descripcion}"/>
+		</s:BorderContainer>
+	</s:HGroup>
+	<s:HGroup width="100%" horizontalAlign="center">
+		<s:Button width="90" label="Interferir" enabled="{interferir}"/>
+		<s:Button width="90" label="Aceptar" click="btnBack_clickHandler(event)"/>	
+	</s:HGroup>
+	
+	
+	
+</s:BorderContainer>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="400" height="300" creationComplete="orientacion(event)" 
+		 initialize="group1_initializeHandler(event)"
+		 dragDrop="group1_dragDropHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import eventos.SeleccionEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.core.mx_internal;
+			import mx.events.CollectionEvent;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			
+			import views.PartidaView;
+			
+			import vo.CartaVO;
+			
+			
+			[Bindable]public var dataProvider:ArrayCollection;
+			public var orientacionSt:String;
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			public var fnInfo:Function;
+			public var fnSeleccion:Function;
+			[Bindable] public var cartaSelect:Carta;
+			[Bindable] public var cartaSelectB:Boolean;
+			[Bindable] public var countDataProvider:int;
+			[Bindable] public var defensa:Boolean = false;
+			
+			[Bindable] public var arrCartaSelect:Array = [];
+			public var cantidadSeleccionable:int;
+			public var contenedor:String = '';
+			
+			
+			
+			public function set fnAdd(val:int):void{
+				trace("fnAdd : " + val);
+				trace(this.id);
+				if(this.numElements > 0){
+					this.removeAllElements();	
+				}
+				trace(dataProvider);
+				for(var i:int = 0; i < val; i++){
+					//Carta(dataProvider.getItemAt(i)).defensa = defensa;
+					Carta(dataProvider.getItemAt(i)).zonaContenedora = this;
+					this.addElement(Carta(dataProvider.getItemAt(i)));
+				}
+				
+			}
+			
+			override public function addElement(element:IVisualElement):IVisualElement
+			{
+				// TODO Auto Generated method stub
+				trace("addElement");
+				element['contenedorAnterior'] = element['contenedor'];
+				element['contenedor'] = this.id;
+				return super.addElement(element);
+			}
+			
+			
+			
+			
+			protected function orientacion(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				switch(orientacionSt){
+					case 'horizontal':
+						var h:HorizontalLayout = new HorizontalLayout();
+						h.horizontalAlign = 'center';
+						this.layout = h;
+						break;
+					case 'vertical':
+						var v:VerticalLayout = new VerticalLayout();
+						v.horizontalAlign = 'middle';
+						this.layout = v;
+						break;
+					case 'normal':
+						break;
+				}
+				//countDataProvider = dataProvider.length;
+				trace("el dataProvider = " + countDataProvider);
+			}
+			
+			protected function group1_initializeHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				//dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, actualiza);
+			}
+			
+			protected function actualiza(event:CollectionEvent):void{
+				countDataProvider = event.target.length;
+			}
+			
+			protected function group1_dragDropHandler(event:DragEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private function set fnSelectCarta(val:Boolean):void{
+				if(fnSeleccion != null){
+					fnSeleccion.call(this);
+				}
+					/*var ejec:Boolean = this.dispatchEvent(new SeleccionEvent());
+					if(this.id == 'zonaAtaqueOponente'){
+						PartidaView(MitosFlex(this.parentApplication).navigator.activeView).zonaDefensa.enabled = cartaSelectB;	
+					}*/
+					
+			}
+			
+			
+			
+						
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="selectCartaEvent", type="eventos.SeleccionEvent")]
+	</fx:Metadata>
+	<fx:Binding source="countDataProvider" destination="fnAdd"/>
+	<fx:Binding source="cartaSelectB" destination="fnSelectCarta"/>
+</s:Group>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" width="828" height="300" color="#ffffff" creationComplete="bordercontainer2_creationCompleteHandler(event)" backgroundColor="#000000" backgroundAlpha="{add}" xmlns:graficos="componentes.graficos.*"
+				   >
+	<fx:Script>
+		<![CDATA[
+			import clasesInternas.Duelo;
+			
+			import controlador.Controlador;
+			
+			import eventos.PartidaEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			[Bindable] private var add:Number = 0;
+			[Bindable] public var cartas:ArrayCollection;
+			
+			[Bindable] public var titulo:String;
+			[Bindable] public var descripcionEfectoLabel:String;
+			public var cant:int;
+			public var fnInfo:Function;
+			public var fnpos:Function;
+			public var activo:Boolean = false;
+			[Bindable] public var fase:int;
+			public var aliadosJugados:int;
+			[Bindable] public var orosBlock:Boolean = false;
+			[Bindable] public var countDataProvider:int;
+			[Bindable] public var reserva:int;
+			public var tipoObjetivo:String;
+			
+			protected function bordercontainer2_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub				
+				this.addEventListener(Event.ENTER_FRAME, oscurese);
+				countDataProvider = cartas.length;
+			}
+			
+			private function oscurese(event:Event):void{
+				add += 0.01;
+				if(add > 0.5){
+					this.removeEventListener(Event.ENTER_FRAME, oscurese);
+				}
+			}
+			
+			
+			
+			public function cerrar():void
+			{
+				// TODO Auto-generated method stub				
+				fnpos.call(this, zonaObjetivo.cartaSelect, tipoObjetivo);
+				PopUpManager.removePopUp(this);
+				this.activo = false;
+			}
+			
+			
+			public function cargaCartas():void{
+				zonaObjetivo.removeAllElements();
+				for each(var carta:Carta in cartas){
+					zonaObjetivo.addElement(carta);	
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+	</fx:Declarations>
+	
+	
+	
+	<s:BorderContainer width="80%" height="80%" cornerRadius="10" horizontalCenter="0"
+					   verticalCenter="0">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"  gap="10" paddingBottom="10"/>
+		</s:layout>
+		<s:Group width="100%">
+			<s:Rect width="100%" height="100%" topLeftRadiusX="10" topLeftRadiusY="10" topRightRadiusX="10" topRightRadiusY="10">
+				
+				
+				<s:fill>
+					<s:SolidColor color="#2626b3" />
+				</s:fill>
+			</s:Rect>
+			<s:Label top="10" left="10" right="10" text="{titulo}" fontSize="16" fontWeight="bold" color="#ffffff"/>
+		</s:Group>
+		<s:Group id="descripcionEfecto" width="100%" height="30">
+			<s:Label text="{descripcionEfectoLabel}" color="0x000000" top="3" left="15"/>
+		</s:Group>
+		
+		<!--<s:Rect width="100%" height="1">
+		<s:fill>
+		<s:SolidColor color="#dddddd" />
+		</s:fill>
+		</s:Rect>-->
+		<s:Scroller width="95%" height="65%">
+			<graficos:Zona id="zonaObjetivo" width="100%" height="100%" fnInfo="fnInfo" horizontalCenter="0" verticalCenter="0" orientacionSt="horizontal" creationComplete="cargaCartas()"/>	
+		</s:Scroller>
+		
+		
+		<s:HGroup gap="10">
+			<s:Button  width="90" height="33" label="Aceptas" chromeColor="#2626b3" click="cerrar()"/>
+			<s:Button  width="90" height="33" label="act" chromeColor="#2626b3" click="cargaCartas()"/>
+		</s:HGroup>
+	</s:BorderContainer>
+</s:BorderContainer>

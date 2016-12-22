@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="ini(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			
+			public var cartas:ArrayCollection = new ArrayCollection();
+			public var idGrupo:String;
+			public var eliminada:Boolean = false;
+			public var contenedor:String = '';
+			public var contenedorAnterior:String = '';
+			
+			public function cargaCartas():void{
+				this.removeAllElements();
+				for each(var carta:Carta in cartas){
+					this.addElement(carta);	
+				}
+				
+			}
+			
+			protected function ini(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				cargaCartas();
+			}
+			
+			
+			private var alt:int = 0;
+			override public function addElement(element:IVisualElement):IVisualElement
+			{
+				// TODO Auto Generated method stub
+				element.top = alt;
+				alt += 10;
+				element.left = 0;
+				
+				return super.addElement(element);
+			}
+			
+			override public function removeElement(element:IVisualElement):IVisualElement
+			{
+				// TODO Auto Generated method stub
+				var idCartaRemovida:String = element['cartaVO']['id'];
+				if(idCartaRemovida == String(idGrupo.split('::')[1])){
+					for(var i:int = 0; i < this.numElements; i++){
+						if(this.getElementAt(i)['cartaVO']['id'] == idCartaRemovida){
+							this.getElementAt(i)['accion'] = 'cementerio';
+							Carta(this.getElementAt(i)).fnAccion('cementerio');
+							break;
+						}
+					}
+				}
+				return element;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</s:Group>

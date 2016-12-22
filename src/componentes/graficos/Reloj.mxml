@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			
+			[Bindable] private var min:String;
+			[Bindable] private var seg:String;
+			public var timer:Timer;
+			public var tiempo:String;
+			private var arrTime:Array;
+			private var minNum:int;
+			private var segNum:int;
+			public var callback:Function;
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				arrTime = tiempo.split(':');
+				minNum = int(arrTime[0]);
+				segNum = int(arrTime[1]);
+				seg = segNum + '0';
+				min = minNum + '';
+				timer = new Timer(1000);
+				timer.repeatCount = 0;
+				timer.addEventListener(TimerEvent.TIMER, ejecuta);
+			}
+			
+			
+			private function ejecuta(event:TimerEvent):void{
+				segNum--;
+				if(segNum < 0){
+					segNum = 59;
+					seg = segNum + '';
+					minNum--;
+					if(minNum == 0 && segNum == 0){
+						timer.removeEventListener(TimerEvent.TIMER, ejecuta);
+						if(callback != null){
+							callback.call(this);
+						}
+					}
+					min = minNum + '';
+				} else {
+					
+					seg = (segNum < 10 ? '0' : '') + segNum + '';
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+	<s:BorderContainer creationComplete="bordercontainer1_creationCompleteHandler(event)">
+		<s:layout>
+			<s:HorizontalLayout/>
+			
+		</s:layout>
+		<s:Label id="lblMin" text="{min}"/>
+		<s:Label text=":"/>
+		<s:Label id="lblSeg" text="{seg}"/>
+	</s:BorderContainer>
+</s:BorderContainer>

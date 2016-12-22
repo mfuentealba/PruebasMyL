@@ -70,12 +70,15 @@
 				// TODO Auto-generated method stub
 				contenedor.stopDrag();
 				this.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-				if(strNuevo.indexOf('Pro') > -1){
-					this[strNuevo].addElement(contenedor.removeElementAt(0));	
-				} else {
-					this[strPadre].addElement(contenedor.removeElementAt(0));
-				}
+				var carta:CartaView = CartaView(contenedor.removeElementAt(0));
 				
+				if(strNuevo.indexOf('Pro') > -1){
+					
+					this[strNuevo].addElement(carta);	
+				} else {
+					this[strPadre].addElement(carta);
+				}
+				carta.rotationX = -20;
 				PopUpManager.removePopUp(contenedor);
 				trace("**** btn_mouseUpHandler ****");
 			}
@@ -152,6 +155,12 @@
 				bcPrincipal.rotationX = -40
 			}
 			
+			protected function apPropio_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -160,27 +169,27 @@
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="bottom" paddingBottom="50"/>
 	</s:layout>
-	<s:BorderContainer id="bcPrincipal" width="40%" height="80%" creationComplete="bordercontainer1_creationCompleteHandler(event)">
+	<s:BorderContainer id="bcPrincipal" width="40%" height="90%" creationComplete="bordercontainer1_creationCompleteHandler(event)">
 		<s:layout>
-			<s:VerticalLayout horizontalAlign="center"/>
+			<s:VerticalLayout horizontalAlign="center" gap="50"/>
 		</s:layout>
 		
 		<s:BorderContainer width="100%" height="100%">
 			<s:layout>
-				<s:VerticalLayout horizontalAlign="center" gap="100"/>
+				<s:VerticalLayout horizontalAlign="center"/>
 			</s:layout>
-			<s:BorderContainer id="apOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)"  width="100%" height="100">
+			<s:BorderContainer id="apOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)"  width="100%" height="80">
 				<s:layout>
 					<s:HorizontalLayout/>
 				</s:layout>
 				
 			</s:BorderContainer>
-			<s:BorderContainer id="alOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+			<s:BorderContainer id="alOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
 				<s:layout>
 					<s:HorizontalLayout horizontalAlign="center"/>
 				</s:layout>
 			</s:BorderContainer>
-			<s:BorderContainer id="atOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+			<s:BorderContainer id="atOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
 				<s:layout>
 					<s:HorizontalLayout horizontalAlign="center"/>
 				</s:layout>
@@ -192,27 +201,27 @@
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="center"/>
 			</s:layout>
-			<s:BorderContainer id="atPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+			<s:BorderContainer id="atPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
 				<s:layout>
 					<s:HorizontalLayout horizontalAlign="center"/>
 				</s:layout>
 				
 			</s:BorderContainer>
-			<s:BorderContainer id="alPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+			<s:BorderContainer id="alPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
 				<s:layout>
 					<s:HorizontalLayout horizontalAlign="center"/>
 				</s:layout>
 			</s:BorderContainer>
-			<s:BorderContainer id="apPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="100">
+			<s:BorderContainer id="apPropio" mouseDown="fnMouseDownHandler(event)" click="apPropio_clickHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
 				<s:layout>
 					<s:HorizontalLayout horizontalAlign="center" />
 				</s:layout>
 				
 				
-				<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="50"/>
+				<components:CartaView srcCarta="assets/cartas/furia/1.png" height="80" width="40"/>
 			</s:BorderContainer>	
 		</s:BorderContainer>
 		
 	</s:BorderContainer>
-	
+	<components:ManoView/>
 </s:WindowedApplication>
