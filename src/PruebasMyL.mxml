@@ -23,8 +23,8 @@
 					
 					
 					contenedor = new BorderContainer();
-					contenedor.width = 60;
-					contenedor.height = 100;
+					contenedor.width = 56;
+					contenedor.height = 80;
 					event.target.x = 0;
 					event.target.y = 0;
 					PopUpManager.addPopUp(contenedor, DisplayObject(event.target));
@@ -218,7 +218,7 @@
 				</s:layout>
 				
 				
-				<components:CartaView srcCarta="assets/cartas/furia/1.png" height="80" width="40"/>
+				<components:CartaView srcCarta="assets/cartas/furia/1.png"/>
 			</s:BorderContainer>	
 		</s:BorderContainer>
 		
