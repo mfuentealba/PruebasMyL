@@ -1,38 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*" creationComplete="hgroup1_creationCompleteHandler(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*" click="fnSeleccion(event)" creationComplete="fnOrdenMano()">
 	<fx:Script>
 		<![CDATA[
+			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
-			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
+			private var indAnt:int;
+			
+			
+			protected function fnOrdenMano():void
 			{
 				// TODO Auto-generated method stub
-				var delta:int = 25;
-				var ini:int = -50;
+				
+				var delta:Number = 90 / this.numElements;
+				var ini:int = this.numElements == 1 ? 0 : -45;
 				var carta:CartaView;
 				for(var i:int = 0; i < this.numElements; i++){
 					carta = CartaView(this.getElementAt(i));
-					var r:Rectangle = carta.getRect(stage);
-					var m:Matrix = carta.transform.matrix;
-					m.ty = -carta.height;
-					m.rotate(ini * (Math.PI/180));
-					carta.transform.matrix = m;
-					m.ty = carta.height;
+					carta.rotar(ini);
 					//carta.rotationZ = ini;
 					ini += delta;
 				}
 			}
+			
+			override public function addElement(element:IVisualElement):IVisualElement
+			{
+				// TODO Auto Generated method stub
+				var obj:* = super.addElement(element);
+				fnOrdenMano();
+				return obj;
+			}
+			
+			override public function addElementAt(element:IVisualElement, index:int):IVisualElement
+			{
+				// TODO Auto Generated method stub
+				var obj:* = super.addElementAt(element, index);
+				fnOrdenMano();
+				return obj;
+			}
+			
+			override public function removeElement(element:IVisualElement):IVisualElement
+			{
+				// TODO Auto Generated method stub
+				var obj:* = super.removeElement(element);
+				fnOrdenMano();
+				return obj;
+			}
+			
+			
+			protected function fnSeleccion(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				indAnt = this.getElementIndex(IVisualElement(event.target));
+				this.removeElement(IVisualElement(event.target));
+				this.addElement(IVisualElement(event.target));
+				
+			}
+			
+			
 			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="56"/>
-	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="56"/>
-	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="56"/>
-	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="56"/>
-	<components:CartaView srcCarta="assets/cartas/furia/1.png" height="100" width="56"/>
+	<components:CartaView url="assets/cartas/furia/1.png" height="150" width="84"/>
+	<components:CartaView url="assets/cartas/furia/1.png" height="150" width="84"/>
+	<components:CartaView url="assets/cartas/furia/1.png" height="150" width="84"/>
+	<components:CartaView url="assets/cartas/furia/1.png" height="150" width="84"/>
+	<components:CartaView url="assets/cartas/furia/1.png" height="150" width="84"/>
 </s:BorderContainer>

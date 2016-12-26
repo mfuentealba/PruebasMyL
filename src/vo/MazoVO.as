@@ -1,6 +1,5 @@
 package vo
 {
-	import componentes.graficos.Carta;
 	
 	import modelo.Modelo;
 	
@@ -37,26 +36,7 @@ package vo
 			_arrCartas = dataProvider;
 		}
 		
-		public static function clone(_mazoVO:MazoVO):void{
-			var mazoVO:MazoVO = new MazoVO();
-			mazoVO.id = _mazoVO.id;
-			mazoVO.oroInicial = _mazoVO.oroInicial;
-			for(var i:int = 0; i < _mazoVO.arrCartas.length; i++){
-				var carta:Carta = new Carta();
-				carta.percentHeight = 100;
-				carta.idUnico = _mazoVO.arrCartas.getItemAt(i)['idUnico'];
-				carta.fnInfo = Modelo.getInstance().fnInfo;
-				carta.fnDeselecciona = Modelo.getInstance().fnDeselecciona;
-				carta.img = _mazoVO.arrCartas.getItemAt(i)['cartaVO']['url'];
-				carta.cartaVO = CartaVO.clone(_mazoVO.arrCartas.getItemAt(i)['cartaVO']);
-				carta.propietario = 'Propia';
-				carta.envio = 'Oponente';
-				carta.contenedor = 'zonaCastilloPropia';
-				carta.accion = 'zonaCastilloPropia';
-				carta.fnAccion('zonaCastilloPropia');
-			}
-			//modelapduelo.mazoAct.mazoVO
-		}
+		
 		
 	}
 }

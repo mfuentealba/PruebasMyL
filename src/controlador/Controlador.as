@@ -4,9 +4,10 @@ package controlador
 	import clasesInternas.Duelo;
 	
 	import componentes.graficos.Alert;
-	import componentes.graficos.Carta;
 	import componentes.graficos.PopupMensaje;
 	import componentes.graficos.Reloj;
+	
+	import components.CartaView;
 	
 	import eventos.CartasEvent;
 	import eventos.EfectosEvent;
@@ -36,7 +37,6 @@ package controlador
 	import spark.components.Application;
 	import spark.components.Button;
 	
-	import vo.CartaVO;
 	import vo.MazoVO;
 	import vo.MovimientoVO;
 	import vo.PartidaVO;
@@ -508,7 +508,7 @@ package controlador
 				case 'ENVIA_PARTIDA':
 					if(arrParam[2] == 'OK'){
 						
-						modelApp.partida.tiempoOponente = arrParam[9];
+						/*modelApp.partida.tiempoOponente = arrParam[9];
 						//modelApp.partida.turno = true;
 						
 						modelApp.timeOponente.timer.stop();
@@ -566,18 +566,7 @@ package controlador
 						arrCarta = modelApp.arrCartas.source.filter(modelApp.fnBuscaCarta2);
 						carta.cartaVO = arrCarta[0];
 						carta.img = carta.cartaVO.url;
-						/*for(i = 0; i < m; i++){
-							
-							carta = new Carta();
-							carta.propietario = 'Oponente';
-							carta.envio = 'Propia';
-							carta.percentHeight = 100;
-							carta.fnInfo = modelApp.fnInfo;
-							carta.fnDeselecciona = modelApp.fnDeselecciona;
-							carta.cartaVO = CartaVO.clone(modelApp.arrCartas[0]);
-							carta.fnAccion('zonaCastilloOponente');
-							
-						}*/
+						*/
 						
 					}
 					break;
@@ -711,7 +700,7 @@ package controlador
 					if(i == 8){
 						i = 8;
 					}
-					var carta:Carta = new Carta();
+					var carta:CartaView = new CartaView();
 					carta.propietario = 'Propia';
 					carta.envio = 'Oponente';
 					carta.percentHeight = 100;
@@ -723,7 +712,6 @@ package controlador
 					
 					carta.idUnico = String(dataProvider.getItemAt(i)).split(',')[0];
 					//carta.cartaVO = CartaVO(modelApp.arrCartas[dataProvider.getItemAt(i)]);
-					carta.cartaVO = CartaVO.clone(modelApp.arrCartas[idcarta]);
 					
 					MazoVO(modelApp.jugador.objMazos[arrConfirmacion[1]]).arrCartas.addItem(carta);
 				}
@@ -739,7 +727,7 @@ package controlador
 			if(arrConfirmacion[0] == 'OK'){
 				var arrCartas:Array = String(arrConfirmacion[1]).split('@@@@');
 				arrCartas.pop();
-				modelApp.arrCartas.addItem(new CartaVO());
+				modelApp.arrCartas.addItem(new CartaView());
 				var arrCartasAjustada:Array = [];
 				var objCarta:Object = {};
 				for(var i:int = 0; i < arrCartas.length; i++){
@@ -749,7 +737,7 @@ package controlador
 						arr[0] = '6';
 					}
 					if(!objCarta['c' + arr[0]]){
-						var cartaVO:CartaVO = new CartaVO();
+						var cartaVO:CartaView = new CartaView();
 						if(arr[13] == 'enJuego'){
 							cartaVO.btnEfecto = true;
 							
@@ -804,7 +792,7 @@ package controlador
 								obj['habId'] = arr[23];
 								obj['arrDisparadores'] = {};
 								obj['arrDisparadores'][arr[13]] = arr[13];							
-								CartaVO(objCarta['c' + arr[0]]['carta']).arrHabilidades.push(obj);
+								CartaView(objCarta['c' + arr[0]]['carta']).arrHabilidades.push(obj);
 								objCarta['c' + arr[0]][arr[23]] = {};
 								objCarta['c' + arr[0]][arr[23]][arr[13]] = arr[13];
 								obj['TipoBonificacion']  = arr[14];
@@ -819,7 +807,7 @@ package controlador
 								obj['descripcion'] = arr[24];
 							} else {
 								objCarta['c' + arr[0]][arr[23]][arr[13]] = arr[13];
-								CartaVO(objCarta['c' + arr[0]]['carta']).arrHabilidades['arrDisparadores'][arr[13]] = arr[13];
+								CartaView(objCarta['c' + arr[0]]['carta']).arrHabilidades['arrDisparadores'][arr[13]] = arr[13];
 							}	
 						}
 						

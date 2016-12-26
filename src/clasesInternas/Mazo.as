@@ -1,6 +1,5 @@
 package clasesInternas
 {
-	import componentes.graficos.Carta;
 	
 	import modelo.Modelo;
 	
@@ -62,13 +61,13 @@ package clasesInternas
 		
 		public function fnOroInicial():void{
 			mazoVO = modelApp.jugador.objMazos[modelApp.jugador.mazoActivo];
-			for(var i:int = 0; i < modelApp.partidaView.zonaCastilloPropia.numElements; i++){
+			/*for(var i:int = 0; i < modelApp.partidaView.zonaCastilloPropia.numElements; i++){
 				if(Carta(modelApp.partidaView.zonaCastilloPropia.getElementAt(i)).idUnico == mazoVO.oroInicial){
 					Carta(modelApp.partidaView.zonaCastilloPropia.getElementAt(i)).accion = 'zonaOroPropia';
 					Carta(modelApp.partidaView.zonaCastilloPropia.getElementAt(i)).fnAccion('zonaOroPropia');
 					break;
 				}
-			}
+			}*/
 			
 		}
 	}

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="components.*" creationComplete="fnIni(event)">
+	<fx:Script>
+		<![CDATA[
+			import modelo.Modelo;
+			
+			import mx.core.IVisualElement;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.Group;
+			
+			private var contenedor:BorderContainer;
+			public var strNuevo:String = '';
+			private var strPadre:String = '';
+			[Bindable]private var modelApp:Modelo = Modelo.getInstance();
+			
+			protected function fnMouseDownHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.target.parentDocument is CartaView || event.target is CartaView){
+					
+					//contenedor.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+					/*event.target.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+					this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);*/
+					event.target.parentDocument.addEventListener(MouseEvent.MOUSE_MOVE, fnEjecutaMovimiento);
+					event.target.parentDocument.addEventListener(MouseEvent.MOUSE_UP, fnSoloClick);
+					
+					
+				}
+				
+			}
+			
+			
+			private function fnSoloClick(event:MouseEvent):void{
+				event.target.parentDocument.removeEventListener(MouseEvent.MOUSE_MOVE, fnEjecutaMovimiento);
+				event.target.parentDocument.removeEventListener(MouseEvent.MOUSE_UP, fnSoloClick);
+			}
+			
+			protected function stopDragging(event:MouseEvent):void 
+			{ 
+				// Tell Flash Player to stop listening for the mouseMove event. 
+				this.removeEventListener(MouseEvent.MOUSE_MOVE, dragCicle); 
+			} 
+			
+			
+			protected function dragCicle(event:MouseEvent):void 
+			{ 
+				// Move the circle to the location of the cursor, maintaining  
+				// the offset between the cursor's location and the  
+				// location of the dragged object. 
+				contenedor.x = event.stageX; 
+				contenedor.y = event.stageY; 
+				
+				// Instruct Flash Player to refresh the screen after this event. 
+				event.updateAfterEvent(); 
+			} 
+			
+			protected function mouseUpHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				contenedor.stopDrag();
+				this.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+				//this.removeEventListener(MouseEvent.MOUSE_MOVE, fnEjecutaMovimiento);
+				var carta:CartaView = CartaView(contenedor.removeElementAt(0));
+				
+				if(strNuevo.indexOf('Pro') > -1){
+					
+					this[strNuevo].addElement(carta);	
+				} else {
+					this[strPadre].addElement(carta);
+				}
+				carta.rotationX = -20;
+				PopUpManager.removePopUp(contenedor);
+				trace("**** btn_mouseUpHandler ****");
+			}
+			
+			
+			
+			protected function mouseOverHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				strNuevo = event.currentTarget.id + '';
+				trace("**** over " + strNuevo + " ****");
+			}
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var r:Rectangle = bcPrincipal.getRect(stage);
+				
+				var centro:Point = new Point(r.x+r.width/2,r.y+r.height/2);
+				
+				//m matriz de transformación del movieclip
+				var m:Matrix=bcPrincipal.transform.matrix;
+				
+				//translación al centro
+				m.tx -= centro.x;
+				//m.ty -= centro.y;
+				
+				//rotación (en radianes)
+				/*m.a = 1;
+				m.b = 0;
+				m.c = 0;
+				m.d = 1;*/
+				//m.rotate(20 * (Math.PI/180));
+				
+				//traslación final, a su posición de partida
+				m.tx += centro.x;
+				m.ty += centro.y;
+				
+				//y aplicamos la matriz de transformación sobre el movieclip
+				bcPrincipal.transform.matrix=m;
+				bcPrincipal.rotationX = -40;
+				this.addEventListener(ResizeEvent.RESIZE, windowedapplication1_resizeHandler);
+				
+			}
+			
+			protected function windowedapplication1_resizeHandler(event:ResizeEvent):void
+			{
+				// TODO Auto-generated method stub
+				var r:Rectangle = bcPrincipal.getRect(stage);
+				
+				var centro:Point = new Point(r.x+r.width/2,r.y+r.height/2);
+				
+				//m matriz de transformación del movieclip
+				var m:Matrix=bcPrincipal.transform.matrix;
+				
+				//translación al centro
+				m.tx -= centro.x;
+				//m.ty -= centro.y;
+				
+				//rotación (en radianes)
+				/*m.a = 1;
+				m.b = 0;
+				m.c = 0;
+				m.d = 1;*/
+				//m.rotate(20 * (Math.PI/180));
+				
+				//traslación final, a su posición de partida
+				m.tx += centro.x;
+				m.ty += centro.y;
+				
+				//y aplicamos la matriz de transformación sobre el movieclip
+				bcPrincipal.transform.matrix=m;
+				bcPrincipal.rotationX = -40
+			}
+			
+			protected function apPropio_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function fnMoverDesdeMano(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				CartaView(event.target).addEventListener(MouseEvent.MOUSE_MOVE, fnEjecutaMovimiento);
+				this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+			}
+			
+			private function fnEjecutaMovimiento(event:MouseEvent):void{
+				
+				
+				event.currentTarget.removeEventListener(MouseEvent.MOUSE_MOVE, fnEjecutaMovimiento);
+				event.currentTarget.removeEventListener(MouseEvent.MOUSE_UP, fnSoloClick);
+				this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+				event.currentTarget.removeEventListener(MouseEvent.MOUSE_MOVE, fnEjecutaMovimiento);
+				event.target.reset();				
+				contenedor = new BorderContainer();
+				/*contenedor.width = 56;
+				contenedor.height = 80;*/
+				event.target.x = 0;
+				event.target.y = 0;
+				PopUpManager.addPopUp(contenedor, DisplayObject(event.target));
+				PopUpManager.centerPopUp(contenedor);
+				//contenedor.x -= 10000;
+				//this.addElement(contenedor);
+				contenedor.addElement(event.currentTarget.removeElement(IVisualElement(event.target)));
+				strPadre = event.currentTarget.id;
+				//contenedor.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
+				/*contenedor.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+				event.target.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+				this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);*/
+				contenedor.startDrag(true);
+				
+				event.currentTarget.addEventListener(MouseEvent.MOUSE_MOVE, dragCicle);
+			}
+			
+			protected function fnIni(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				modelApp.partidaView = this;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:VGroup width="40%" height="90%" horizontalCenter="0" verticalCenter="0" horizontalAlign="center">
+		<s:BorderContainer id="bcPrincipal" width="100%" height="100%" creationComplete="bordercontainer1_creationCompleteHandler(event)">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" gap="50"/>
+			</s:layout>
+			
+			<s:BorderContainer width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:BorderContainer id="apOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)"  width="100%" height="80">
+					<s:layout>
+						<s:HorizontalLayout/>
+					</s:layout>
+					
+				</s:BorderContainer>
+				<s:BorderContainer id="alOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
+					<s:layout>
+						<s:HorizontalLayout horizontalAlign="center"/>
+					</s:layout>
+				</s:BorderContainer>
+				<s:BorderContainer id="atOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
+					<s:layout>
+						<s:HorizontalLayout horizontalAlign="center"/>
+					</s:layout>
+				</s:BorderContainer>	
+			</s:BorderContainer>
+			
+			
+			<s:BorderContainer width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:BorderContainer id="atPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
+					<s:layout>
+						<s:HorizontalLayout horizontalAlign="center"/>
+					</s:layout>
+					
+				</s:BorderContainer>
+				<s:BorderContainer id="alPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
+					<s:layout>
+						<s:HorizontalLayout horizontalAlign="center"/>
+					</s:layout>
+				</s:BorderContainer>
+				<s:BorderContainer id="apPropio" mouseDown="fnMouseDownHandler(event)" click="apPropio_clickHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
+					<s:layout>
+						<s:HorizontalLayout horizontalAlign="center" />
+					</s:layout>
+					
+					
+					<components:CartaView url="assets/cartas/furia/1.png"/>
+				</s:BorderContainer>	
+			</s:BorderContainer>
+			
+		</s:BorderContainer>
+		<components:ManoView id="mano" mouseDown="fnMouseDownHandler(event)"/>	
+	</s:VGroup>
+	<s:TileGroup right="50" bottom="50" width="200" height="200" requestedColumnCount="2"
+				 requestedRowCount="2">
+		<s:Group id="zonaCastilloPropia"/>
+		<s:Group/>
+		<s:Group/>
+		<s:Group/>
+	</s:TileGroup>
+		
+</s:Group>

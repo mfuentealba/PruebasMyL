@@ -1,227 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
-					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*" width="1280" height="720">
+					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*" width="1280" height="720" xmlns:views="views.*"
+					   initialize="ini(event)">
 	<fx:Script>
 		<![CDATA[
-			import mx.core.IVisualElement;
-			import mx.events.DragEvent;
+			import modelo.Modelo;
+			
 			import mx.events.FlexEvent;
-			import mx.events.ResizeEvent;
-			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;
+			[Bindable]private var modelApp:Modelo = Modelo.getInstance();
 			
-			import spark.components.Group;
-			
-			private var contenedor:BorderContainer;
-			public var strNuevo:String = '';
-			private var strPadre:String = '';
-			
-			protected function fnMouseDownHandler(event:MouseEvent):void
+			protected function ini(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				if(event.target.parentDocument is CartaView || event.target is CartaView){
-					
-					
-					contenedor = new BorderContainer();
-					contenedor.width = 56;
-					contenedor.height = 80;
-					event.target.x = 0;
-					event.target.y = 0;
-					PopUpManager.addPopUp(contenedor, DisplayObject(event.target));
-					PopUpManager.centerPopUp(contenedor);
-					//contenedor.x -= 10000;
-					//this.addElement(contenedor);
-					contenedor.addElement(event.currentTarget.removeElement(IVisualElement(event.target)));
-					strPadre = event.currentTarget.id;
-					//contenedor.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
-					contenedor.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-					event.target.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-					this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-					contenedor.startDrag(true);	
-					this.addEventListener(MouseEvent.MOUSE_MOVE, dragCicle); 
-					
-					
-				}
+				/*stage.nativeWindow.x = (Screen.mainScreen.visibleBounds.width - stage.nativeWindow.width) / 2;
+				stage.nativeWindow.y = (Screen.mainScreen.visibleBounds.height - stage.nativeWindow.height) / 2;*/
+				modelApp.xcord = Screen.mainScreen.visibleBounds.width;
+				modelApp.ycord = Screen.mainScreen.visibleBounds.height;
+				config.send();
+				//var cargador:URLLoader=new URLLoader( new URLRequest("config.xml") );
 				
 			}
 			
-			
-			protected function stopDragging(event:MouseEvent):void 
-			{ 
-				// Tell Flash Player to stop listening for the mouseMove event. 
-				this.removeEventListener(MouseEvent.MOUSE_MOVE, dragCicle); 
-			} 
-			
-			
-			protected function dragCicle(event:MouseEvent):void 
-			{ 
-				// Move the circle to the location of the cursor, maintaining  
-				// the offset between the cursor's location and the  
-				// location of the dragged object. 
-				contenedor.x = event.stageX; 
-				contenedor.y = event.stageY; 
-				
-				// Instruct Flash Player to refresh the screen after this event. 
-				event.updateAfterEvent(); 
-			} 
-			
-			protected function mouseUpHandler(event:MouseEvent):void
+			protected function config_resultHandler(event:ResultEvent):void
 			{
 				// TODO Auto-generated method stub
-				contenedor.stopDrag();
-				this.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-				var carta:CartaView = CartaView(contenedor.removeElementAt(0));
-				
-				if(strNuevo.indexOf('Pro') > -1){
-					
-					this[strNuevo].addElement(carta);	
-				} else {
-					this[strPadre].addElement(carta);
-				}
-				carta.rotationX = -20;
-				PopUpManager.removePopUp(contenedor);
-				trace("**** btn_mouseUpHandler ****");
-			}
-			
-			
-			
-			protected function mouseOverHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
-				
-				strNuevo = event.currentTarget.id + '';
-				trace("**** over " + strNuevo + " ****");
-			}
-			
-			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
-			{
-				// TODO Auto-generated method stub
-				var r:Rectangle = bcPrincipal.getRect(stage);
-				
-				var centro:Point = new Point(r.x+r.width/2,r.y+r.height/2);
-				
-				//m matriz de transformación del movieclip
-				var m:Matrix=bcPrincipal.transform.matrix;
-				
-				//translación al centro
-				m.tx -= centro.x;
-				//m.ty -= centro.y;
-				
-				//rotación (en radianes)
-				/*m.a = 1;
-				m.b = 0;
-				m.c = 0;
-				m.d = 1;*/
-				//m.rotate(20 * (Math.PI/180));
-				
-				//traslación final, a su posición de partida
-				m.tx += centro.x;
-				m.ty += centro.y;
-				
-				//y aplicamos la matriz de transformación sobre el movieclip
-				bcPrincipal.transform.matrix=m;
-				bcPrincipal.rotationX = -40;
-				this.addEventListener(ResizeEvent.RESIZE, windowedapplication1_resizeHandler);
-				
-			}
-			
-			protected function windowedapplication1_resizeHandler(event:ResizeEvent):void
-			{
-				// TODO Auto-generated method stub
-				var r:Rectangle = bcPrincipal.getRect(stage);
-				
-				var centro:Point = new Point(r.x+r.width/2,r.y+r.height/2);
-				
-				//m matriz de transformación del movieclip
-				var m:Matrix=bcPrincipal.transform.matrix;
-				
-				//translación al centro
-				m.tx -= centro.x;
-				//m.ty -= centro.y;
-				
-				//rotación (en radianes)
-				/*m.a = 1;
-				m.b = 0;
-				m.c = 0;
-				m.d = 1;*/
-				//m.rotate(20 * (Math.PI/180));
-				
-				//traslación final, a su posición de partida
-				m.tx += centro.x;
-				m.ty += centro.y;
-				
-				//y aplicamos la matriz de transformación sobre el movieclip
-				bcPrincipal.transform.matrix=m;
-				bcPrincipal.rotationX = -40
-			}
-			
-			protected function apPropio_clickHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
-				
+				modelApp.conexion.server = event.result.config.server.ip;
+				modelApp.conexion.port = event.result.config.server.port;
+				modelApp.conexionChat.server = event.result.config.chat.ip;
+				modelApp.conexionChat.port = event.result.config.chat.port;
+				modelApp.conexion.ini();
+				modelApp.conexionChat.ini();
+				/*modelApp.fnDeselecciona = fnDeselecciona;
+				modelApp.fnPasaTalisman = fnPasaTalisman; 
+				modelApp.fnBuscaCarta2 = fnBuscaCarta2;
+				modelApp.fnBuscaCartaConArma = fnBuscaCartaConArma;
+				modelApp.fnGeneraGCartas = fnGeneraGCartas; 
+				modelApp.fnQuitaPopupGuerra = fnQuitaPopupGuerra;
+				modelApp.fnAddArma = fnAddArma;
+				modelApp.dispIngresoJuego = dispIngresoJuego;*/
 			}
 			
 		]]>
 	</fx:Script>
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:HTTPService id="config" url="config.xml" result="config_resultHandler(event)"/>
 	</fx:Declarations>
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="bottom" paddingBottom="50"/>
 	</s:layout>
-	<s:BorderContainer id="bcPrincipal" width="40%" height="90%" creationComplete="bordercontainer1_creationCompleteHandler(event)">
-		<s:layout>
-			<s:VerticalLayout horizontalAlign="center" gap="50"/>
-		</s:layout>
-		
-		<s:BorderContainer width="100%" height="100%">
-			<s:layout>
-				<s:VerticalLayout horizontalAlign="center"/>
-			</s:layout>
-			<s:BorderContainer id="apOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)"  width="100%" height="80">
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
+	<mx:ViewStack width="100%" height="100%" selectedIndex="{modelApp.cntlVista}">
+		<s:NavigatorContent>
+			<views:LoginView width="100%" height="100%">
 				
-			</s:BorderContainer>
-			<s:BorderContainer id="alOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
-				<s:layout>
-					<s:HorizontalLayout horizontalAlign="center"/>
-				</s:layout>
-			</s:BorderContainer>
-			<s:BorderContainer id="atOponen" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
-				<s:layout>
-					<s:HorizontalLayout horizontalAlign="center"/>
-				</s:layout>
-			</s:BorderContainer>	
-		</s:BorderContainer>
-		
-		
-		<s:BorderContainer width="100%" height="100%">
-			<s:layout>
-				<s:VerticalLayout horizontalAlign="center"/>
-			</s:layout>
-			<s:BorderContainer id="atPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
-				<s:layout>
-					<s:HorizontalLayout horizontalAlign="center"/>
-				</s:layout>
+			</views:LoginView>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<views:MitosFlexHomeView width="100%" height="100%">
 				
-			</s:BorderContainer>
-			<s:BorderContainer id="alPropio" mouseDown="fnMouseDownHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
-				<s:layout>
-					<s:HorizontalLayout horizontalAlign="center"/>
-				</s:layout>
-			</s:BorderContainer>
-			<s:BorderContainer id="apPropio" mouseDown="fnMouseDownHandler(event)" click="apPropio_clickHandler(event)" mouseOver="mouseOverHandler(event)" width="100%" height="80">
-				<s:layout>
-					<s:HorizontalLayout horizontalAlign="center" />
-				</s:layout>
-				
-				
-				<components:CartaView srcCarta="assets/cartas/furia/1.png"/>
-			</s:BorderContainer>	
-		</s:BorderContainer>
-		
-	</s:BorderContainer>
-	<components:ManoView/>
+			</views:MitosFlexHomeView>
+		</s:NavigatorContent>
+		<s:NavigatorContent>
+			<views:PartidaView/>
+		</s:NavigatorContent>	
+	</mx:ViewStack>
 </s:WindowedApplication>

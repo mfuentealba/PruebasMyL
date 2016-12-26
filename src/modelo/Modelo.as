@@ -65,6 +65,8 @@ package modelo
 		public var partidaView:PartidaView;
 		public var go:Boolean = false;
 		public var efecto:int;
+		public var cntlVista:int;
+		
 		
 		//public var movimientoEntranteVO:MovimientoVO = new MovimientoVO();
 		
@@ -73,19 +75,7 @@ package modelo
 		public var conexionChat:ConexionSocket = new ConexionSocket();
 		public var chatPublico:String = '';
 		
-		[Embed(source="assets/listGastos/ok.png")]
-		public var cancelados:Class;
 		
-		[Embed(source="assets/listGastos/pendiente.png")]
-		public var pendiente:Class;
-		
-		
-		[Embed(source="assets/userNull.png")]
-		public var userNull:Class;
-		[Embed(source="assets/coins.png")]
-		public var coins:Class;
-		[Embed(source="assets/Paz.png")]
-		public var paz:Class;
 		public var xcord:Number;
 		public var ycord:Number;
 		/*		arrTipoIngreso.addItem({id: 1, nombre: 'Efectivo'}); 

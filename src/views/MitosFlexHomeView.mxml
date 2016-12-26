@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" xmlns:componentes="componentes.*" xmlns:graficos="componentes.graficos.*"  xmlns:components="spark.components.*" xmlns:event="com.adobe.crud.event.*" xmlns:itemrenderer="com.adobe.mobilecrud.view.itemrenderer.*"
+				 initialize="ini(event)" remove="view1_removeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import componentes.clases.ConexionSocket;
+			import componentes.graficos.ListCombo;
+			import componentes.graficos.PopupNuevaPartida;
+			
+			import controlador.Controlador;
+			
+			import eventos.CartasEvent;
+			import eventos.MazoEvent;
+			import eventos.MensajeEvent;
+			import eventos.PartidaEvent;
+			
+			import modelo.Modelo;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import vo.PartidaVO;
+			
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			
+			private var pop:PopupNuevaPartida = new PopupNuevaPartida();
+			
+			
+			protected function view1_removeHandler(event:FlexEvent):void////
+			{
+				// TODO Auto-generated method stub
+				if(pop.activo == true){
+					PopUpManager.removePopUp(pop);
+					pop.activo = false;
+				}
+			}
+			
+			protected function generarPartida_clickHandler(event:MouseEvent):void
+			{
+				pop.activo = true;
+				pop.width = this.width;
+				pop.height = this.height;
+				PopUpManager.addPopUp(pop, this, true);
+				PopUpManager.centerPopUp(pop);
+			}
+			
+			protected function buscarPartida_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				/*	var evento:PartidaEvent = new PartidaEvent(PartidaEvent.BUSCA_PARTIDA, modelApp.sesion.id, null, txtTiempo.text);
+				Controlador.getInstance().dispatchEvent(evento);*/
+			}
+			
+			
+			
+			
+			
+			private function set iniciaPartida(val:*):void{
+				if(modelApp.flagInicioPartida == true){
+					modelApp.cntlVista = 2;
+				}
+			}
+			
+			protected function list_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				if(List(event.currentTarget).selectedItem){
+					modelApp.partida = (event.currentTarget.selectedItem);
+					var evento:PartidaEvent = new PartidaEvent(PartidaEvent.GENERA_PARTIDA, modelApp.sesion.id, null, null, List(event.currentTarget).selectedItem);
+					//modelApp.partida.id = List(event.currentTarget).selectedItem.id;
+					Controlador.getInstance().dispatchEvent(evento);
+				}
+				
+			}
+			
+			protected function list_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				//modelApp.fnInicioPartida = fnIniciaPartida; 
+				
+				var evento:PartidaEvent = new PartidaEvent(PartidaEvent.BUSCA_PARTIDAS_TODAS, modelApp.sesion.id, null, null);
+				Controlador.getInstance().dispatchEvent(evento);
+			}
+			
+			private function fnIniciaPartida():void{
+				modelApp.flagInicioPartida = true;
+			}
+			
+			protected function ini(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var cartasEvent:CartasEvent = new CartasEvent(CartasEvent.TRAE_CARTAS);
+				Controlador.getInstance().dispatchEvent(cartasEvent);
+				
+				
+				
+				
+			}
+			
+			protected function bajaPopup_backKeyPressedHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(pop.activo == true){
+					PopUpManager.removePopUp(pop);
+					pop.activo = false;
+				}
+				
+				event.stopImmediatePropagation();
+				event.stopPropagation();    
+			}
+			
+			
+			private function msgChat(msg:String):void{
+				var msgEvent:MensajeEvent = new MensajeEvent(MensajeEvent.MENSAJE_PUBLICO, msg);
+				Controlador.getInstance().dispatchEvent(msgEvent);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<components:RadioButtonGroup id="rbgSelecColor"/>
+	</fx:Declarations>
+	<fx:Binding source="modelApp.flagInicioPartida" destination="iniciaPartida"/>
+	<s:layout>
+		<s:HorizontalLayout  paddingTop="20" paddingLeft="20" paddingRight="20" paddingBottom="20"/>
+	</s:layout>
+	<s:BorderContainer width="50%" height="100%" cornerRadius="5">
+		<components:List id="list" y="110" width="100%" height="100%" top="0"
+						 horizontalCenter="0" dataProvider="{modelApp.arrPartidas}"
+						 labelField="Concepto" click="list_clickHandler(event)">
+			<!--<components:itemRenderer>
+				<fx:Component>
+					<itemrenderer:ExpenseItemRenderer width="100%"
+													  statusStyleName="statusTextStyle"
+													  totalStyleName="totalTextStyle"
+													  dateStyleName="dateTextStyle">
+						<itemrenderer:iconPlaceholder>
+							<s:MultiDPIBitmapSource source160dpi="@Embed(source='/assets/images/hdpi/loadingItem/loadingItemPreview160.png')"
+													source240dpi="@Embed(source='/assets/images/hdpi/loadingItem/loadingItemPreview240.png')"
+													source320dpi="@Embed(source='/assets/images/hdpi/loadingItem/loadingItemPreview320.png')"/>
+							
+						</itemrenderer:iconPlaceholder>
+					</itemrenderer:ExpenseItemRenderer>
+					
+				</fx:Component>
+			</components:itemRenderer>-->
+			
+		</components:List>
+	</s:BorderContainer>
+	<graficos:Chat width="50%" height="100%" fnEnviarMsg="{msgChat}">
+	</graficos:Chat>
+	
+	<!--<components:RadioButton label="Blancas" groupName="rbgSelecColor"/>
+	<components:RadioButton label="Negras" groupName="rbgSelecColor"/>
+	<components:RadioButton label="Aleatorio" selected="true" groupName="rbgSelecColor"/>-->
+	<!--<graficos:Tablero width="50" height="50" visible="false"/>
+	<components:Scroller width="100%" height="100%">
+	<components:VGroup paddingLeft="5" paddingRight="5">
+	
+	<components:Label text="This is a Label control."/> 
+	<components:RichText width="250">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	<components:RichText width="250" fontFamily="Artesanías">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	<components:RichText width="250" fontFamily="BlackCastle">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	<components:RichText width="250" fontFamily="Gatintas">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	<components:RichText width="250" fontFamily="Cabanyal">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	<components:RichText width="250" fontFamily="Certto">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	<components:RichText width="250" fontFamily="miStyleFont">
+	<components:text>
+	WarLand.
+	</components:text>
+	</components:RichText>
+	
+	</components:VGroup>
+	
+	</components:Scroller>-->
+	<s:HGroup>
+		<s:Button label="Generar Partida" click="generarPartida_clickHandler(event)" width="100%"/>
+		<s:Button label="Buscar Partida" click="buscarPartida_clickHandler(event)" width="100%"/>	
+	</s:HGroup>
+</s:Group>

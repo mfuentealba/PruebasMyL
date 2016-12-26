@@ -1,6 +1,5 @@
 package vo
 {
-	import componentes.graficos.Carta;
 	
 	import modelo.Modelo;
 	

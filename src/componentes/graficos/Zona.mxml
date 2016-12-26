@@ -5,6 +5,8 @@
 		 dragDrop="group1_dragDropHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import components.CartaView;
+			
 			import eventos.SeleccionEvent;
 			
 			import modelo.Modelo;
@@ -21,7 +23,6 @@
 			
 			import views.PartidaView;
 			
-			import vo.CartaVO;
 			
 			
 			[Bindable]public var dataProvider:ArrayCollection;
@@ -29,7 +30,7 @@
 			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
 			public var fnInfo:Function;
 			public var fnSeleccion:Function;
-			[Bindable] public var cartaSelect:Carta;
+			[Bindable] public var cartaSelect:CartaView;
 			[Bindable] public var cartaSelectB:Boolean;
 			[Bindable] public var countDataProvider:int;
 			[Bindable] public var defensa:Boolean = false;
@@ -49,8 +50,8 @@
 				trace(dataProvider);
 				for(var i:int = 0; i < val; i++){
 					//Carta(dataProvider.getItemAt(i)).defensa = defensa;
-					Carta(dataProvider.getItemAt(i)).zonaContenedora = this;
-					this.addElement(Carta(dataProvider.getItemAt(i)));
+					CartaView(dataProvider.getItemAt(i)).zonaContenedora = this;
+					this.addElement(CartaView(dataProvider.getItemAt(i)));
 				}
 				
 			}

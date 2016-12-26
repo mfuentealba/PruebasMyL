@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<config>
+	<!-- <ip>201.239.167.204</ip> -->
+	<server>
+		<ip>127.0.0.1</ip>
+		<port>9001</port>
+	</server>
+	<chat>
+		<ip>127.0.0.1</ip>
+		<port>9002</port>
+	</chat>
+</config>

@@ -4,14 +4,100 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="56" height="80" mouseDown="group1_mouseDownHandler(event)">
 	<fx:Script>
 		<![CDATA[
-			[Bindable] public var srcCarta:String;
+			import componentes.graficos.PopupCarta;
+			import componentes.graficos.Zona;
+			
+			import modelo.Modelo;
+			private var ang:Number;
+			
+			
+			public var idCarta:int;
+			public var nombre:String;
+			public var descripcion:String;
+			public var habilidades:String
+			public var tipo:String;
+			public var raza:String;
+			public var frecuencia:String;
+			public var cantidad:int;
+			public var cantidadMazo:int;
+			public var estado:String;
+			[Bindable] public var url:String;
+			public var fuerzaBase:int;
+			public var fuerzaTotal:int;
+			public var fuerzaBono:int;
+			public var imbloqueable:Boolean;
+			public var indestructible:Boolean;
+			public var coste:int;
+			public var arrHabilidades:Array = [];
+			[Bindable] public var btnEfecto:Boolean;
+			
+			public var fnDispIngresoJuego:Function;
+			public var fnEfecto:Function;
+			
+			
+			public static const ORO:int = 1;
+			public static const ALIADO:int = 2;
+			public static const ARMA:int = 3;
+			public static const TOTEM:int = 4;
+			public static const TALISMAN:int = 5;
+			
+			
+			
+			
+			public var cartaVisible:Boolean;
+			[Bindable] public var img:String;
+			[Bindable] public var opt:Boolean;
+			public var fnInfo:Function;
+			public var fnDeselecciona:Function;
+			public var fnDefensa:Function;
+			private var popInfo:PopupCarta = new PopupCarta();
+			[Bindable] private var modelApp:Modelo = Modelo.getInstance();
+			[Bindable] public var borde:Boolean = false;
+			public var idUnico:int;
+			[Bindable] public var ataqueHabilitado:Boolean = false;
+			[Bindable] public var enJuego:Boolean = false;
+			[Bindable] public var defensa:Boolean = false;
+			public var zonaContenedora:Zona;
+			public var eliminada:Boolean = false;
+			[Bindable] public var accion:String;
+			[Bindable] public var selectHab:Boolean;
+			[Bindable] public var reversaDefensa:Boolean;
+			public var contenedor:String = '';
+			public var contenedorAnterior:String = '';
+			public var propietario:String;
+			public var envio:String;
+			
+			
+			
+			
+			
 			
 			protected function group1_mouseDownHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
 				//carta.percentHeight = 100;
-				carta.percentWidth = 100;
+				//carta.percentWidth = 100;
 				
+			}
+			
+			public function rotar(angVal:Number):void{
+				var r:Rectangle = this.getRect(stage);
+				var m:Matrix = carta.transform.matrix;
+				m.ty = -this.height;
+				m.rotate(angVal * (Math.PI/180));
+				this.transform.matrix = m;
+				m.ty = this.height;
+				this.ang = angVal;
+			}
+			
+			public function reset():void{
+				var r:Rectangle = this.getRect(stage);
+				var m:Matrix = carta.transform.matrix;
+				m.ty = -this.height;
+				m.rotate(0 * (Math.PI/180));
+				this.transform.matrix = m;
+				m.ty = this.height;
+				this.ang = 0;
 			}
 			
 		]]>
@@ -20,5 +106,5 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
-	<s:BitmapImage id="carta" source="{srcCarta}" width="100%" height="80"/>
+	<s:BitmapImage id="carta" source="{url}" width="{this.width}" height="{this.height}"/>
 </s:Group>

@@ -53,7 +53,7 @@
 				borderVisible="true" click="listOpciones_clickHandler(event)" color="#FBF6F6"
 				contentBackgroundAlpha="1" contentBackgroundColor="#211F1F"
 				dataProvider="{dataProvider}" horizontalCenter="0" labelField="{labelField}"
-				verticalCenter="0" itemRenderer="componentes.graficos.RenderNegro"/>	
+				verticalCenter="0"/>	
 	</s:BorderContainer>
 	
 </s:BorderContainer>
