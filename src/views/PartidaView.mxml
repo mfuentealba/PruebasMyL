@@ -203,7 +203,11 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:BitmapFill source="assets/img"/>
+		</s:fill>
+	</s:Rect>
 	<s:VGroup width="40%" height="90%" horizontalCenter="0" verticalCenter="0" horizontalAlign="center">
 		<s:BorderContainer id="bcPrincipal" width="100%" height="100%" creationComplete="bordercontainer1_creationCompleteHandler(event)">
 			<s:layout>
